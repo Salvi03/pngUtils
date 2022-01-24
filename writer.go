@@ -1,4 +1,4 @@
-package pngUtils
+package pngutils
 
 import (
 	"encoding/binary"
