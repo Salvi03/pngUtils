@@ -67,11 +67,12 @@ func (im *ImageReader) ReadChunk() (*Chunk, error) {
 	var c *Chunk
 	var err error
 
+	c = &Chunk{}
 	var size = make([]byte, 4)
 	err = binary.Read(im.reader, binary.BigEndian, &size)
 	fmt.Println(size)
 	data := binary.BigEndian.Uint32(size)
-	c.Length = data
+	c.Length = uint32(data)
 
 	var t = make([]byte, 4)
 	err = binary.Read(im.reader, binary.BigEndian, &t)
