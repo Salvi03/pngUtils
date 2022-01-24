@@ -16,6 +16,8 @@ func InitializeImageReader(filename string) (*ImageReader, *Chunk, error) {
 	var ihdr *Chunk
 	var im *ImageReader
 
+	im.filename = filename
+
 	file, err = os.Open(im.filename)
 	buffer = bufio.NewReader(file)
 
