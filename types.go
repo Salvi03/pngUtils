@@ -5,17 +5,17 @@ import (
 	"os"
 )
 
-type imageReader struct {
+type ImageReader struct {
 	filename string
 	reader   *bytes.Reader
 }
 
-type imageWriter struct {
+type ImageWriter struct {
 	filename string
 	file     *os.File
 }
 
-type chunk struct {
+type Chunk struct {
 	length uint32
 	ctype  string
 	data   []byte

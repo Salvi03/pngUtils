@@ -8,12 +8,12 @@ import (
 	"os"
 )
 
-func (im *imageReader) initialize() (*chunk, error) {
+func (im *ImageReader) InitializeImageReader() (*Chunk, error) {
 	var file *os.File
 	var err error
 	var buffer *bufio.Reader
 	var stats os.FileInfo
-	var ihdr *chunk
+	var ihdr *Chunk
 
 	file, err = os.Open(im.filename)
 	buffer = bufio.NewReader(file)
@@ -31,7 +31,7 @@ func (im *imageReader) initialize() (*chunk, error) {
 	return ihdr, err
 }
 
-func (im *imageReader) validate() (*chunk, error) {
+func (im *ImageReader) validate() (*Chunk, error) {
 	var header []byte
 	var h = make([]byte, 8)
 
@@ -49,7 +49,7 @@ func (im *imageReader) validate() (*chunk, error) {
 		err = errors.New("this is not a valid PNG file")
 	}
 
-	c, err1 := im.readChunk()
+	c, err1 := im.ReadChunk()
 	if err1 != nil {
 		return nil, err1
 	}
@@ -57,8 +57,8 @@ func (im *imageReader) validate() (*chunk, error) {
 	return c, err
 }
 
-func (im *imageReader) readChunk() (*chunk, error) {
-	var c *chunk
+func (im *ImageReader) ReadChunk() (*Chunk, error) {
+	var c *Chunk
 	var err error
 
 	err = binary.Read(im.reader, binary.BigEndian, &c.length)
@@ -72,9 +72,9 @@ func (im *imageReader) readChunk() (*chunk, error) {
 	return c, err
 }
 
-func (im *imageReader) resetReader() (*chunk, error) {
+func (im *ImageReader) ResetReader() (*Chunk, error) {
 	var err error
-	var ihdr *chunk
+	var ihdr *Chunk
 
 	_, err = im.reader.Seek(0, 0)
 	if err != nil {
@@ -85,8 +85,8 @@ func (im *imageReader) resetReader() (*chunk, error) {
 	return ihdr, err
 }
 
-func (im *imageReader) readChunkPosition(n int) (*chunk, error) {
-	var c *chunk
+func (im *ImageReader) ReadChunkPosition(n int) (*Chunk, error) {
+	var c *Chunk
 	var err error
 	var i = 0
 
@@ -101,7 +101,7 @@ func (im *imageReader) readChunkPosition(n int) (*chunk, error) {
 	}
 
 	for i < n {
-		c, err = im.readChunk()
+		c, err = im.ReadChunk()
 		if err != nil {
 			break
 		}
@@ -109,7 +109,7 @@ func (im *imageReader) readChunkPosition(n int) (*chunk, error) {
 		i++
 	}
 
-	_, err = im.resetReader()
+	_, err = im.ResetReader()
 	if err != nil {
 		return nil, err
 	}
@@ -117,14 +117,14 @@ func (im *imageReader) readChunkPosition(n int) (*chunk, error) {
 	return c, err
 }
 
-func (im *imageReader) readNChunks(n int) ([]*chunk, error) {
+func (im *ImageReader) ReadNChunks(n int) ([]*Chunk, error) {
 	var err error
-	var chunks []*chunk
-	var c *chunk
+	var chunks []*Chunk
+	var c *Chunk
 	var i = 0
 
 	for i < n {
-		c, err = im.readChunk()
+		c, err = im.ReadChunk()
 		chunks = append(chunks, c)
 		if err != nil {
 			break
@@ -136,15 +136,15 @@ func (im *imageReader) readNChunks(n int) ([]*chunk, error) {
 	return chunks, err
 }
 
-func (im *imageReader) readChunksTillTheEnd() ([]*chunk, error) {
-	var c *chunk
-	var cs []*chunk
+func (im *ImageReader) ReadChunksTillTheEnd() ([]*Chunk, error) {
+	var c *Chunk
+	var cs []*Chunk
 
 	var err error
 
 	c.ctype = ""
 	for c.ctype != "IEND" {
-		c, err = im.readChunk()
+		c, err = im.ReadChunk()
 		if err != nil {
 			break
 		}

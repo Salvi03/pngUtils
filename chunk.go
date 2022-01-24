@@ -6,7 +6,7 @@ import (
 	"hash/crc32"
 )
 
-func (c *chunk) dataToBytes() ([]byte, error) {
+func (c *Chunk) DataToBytes() ([]byte, error) {
 	var data []byte
 	var err error
 
@@ -23,9 +23,9 @@ func (c *chunk) dataToBytes() ([]byte, error) {
 	return data, err
 }
 
-func newChunk(ctype string, data string) (*chunk, error) {
-	var c *chunk
-	c = &chunk{ctype: ctype, data: []byte(data)}
+func NewChunk(ctype string, data string) (*Chunk, error) {
+	var c *Chunk
+	c = &Chunk{ctype: ctype, data: []byte(data)}
 
 	c.length = uint32(len(data))
 	buffer := new(bytes.Buffer)

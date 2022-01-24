@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func initializeWriter(filename string, ihdr *chunk) (*imageWriter, error) {
+func InitializeWriter(filename string, ihdr *Chunk) (*ImageWriter, error) {
 	var file *os.File
 	var err error
 
@@ -14,8 +14,8 @@ func initializeWriter(filename string, ihdr *chunk) (*imageWriter, error) {
 		return nil, err
 	}
 
-	var writer *imageWriter
-	writer = &imageWriter{
+	var writer *ImageWriter
+	writer = &ImageWriter{
 		filename: filename,
 		file:     file,
 	}
@@ -25,15 +25,15 @@ func initializeWriter(filename string, ihdr *chunk) (*imageWriter, error) {
 		return nil, err
 	}
 
-	err = writer.writeChunk(ihdr)
+	err = writer.WriteChunk(ihdr)
 	return writer, err
 }
 
-func (writer *imageWriter) writeChunk(c *chunk) error {
+func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 	var data []byte
 	var err error
 
-	data, err = c.dataToBytes()
+	data, err = c.DataToBytes()
 	if err != nil {
 		return err
 	}
@@ -42,11 +42,11 @@ func (writer *imageWriter) writeChunk(c *chunk) error {
 	return err
 }
 
-func (writer *imageWriter) writeChunks(cs []*chunk) error {
+func (writer *ImageWriter) WriteChunks(cs []*Chunk) error {
 	var err error
 
 	for _, c := range cs {
-		err = writer.writeChunk(c)
+		err = writer.WriteChunk(c)
 		if err != nil {
 			break
 		}
