@@ -8,12 +8,13 @@ import (
 	"os"
 )
 
-func (im *ImageReader) InitializeImageReader() (*Chunk, error) {
+func InitializeImageReader(filename string) (*ImageReader, *Chunk, error) {
 	var file *os.File
 	var err error
 	var buffer *bufio.Reader
 	var stats os.FileInfo
 	var ihdr *Chunk
+	var im *ImageReader
 
 	file, err = os.Open(im.filename)
 	buffer = bufio.NewReader(file)
@@ -24,11 +25,11 @@ func (im *ImageReader) InitializeImageReader() (*Chunk, error) {
 	_, err = buffer.Read(content)
 	im.reader = bytes.NewReader(content)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	ihdr, err = im.validate()
-	return ihdr, err
+	return im, ihdr, err
 }
 
 func (im *ImageReader) validate() (*Chunk, error) {
