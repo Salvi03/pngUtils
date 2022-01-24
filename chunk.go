@@ -11,7 +11,7 @@ func (c *Chunk) DataToBytes() ([]byte, error) {
 	var err error
 
 	data = make([]byte, 4)
-	binary.BigEndian.PutUint32(data, c.length)
+	binary.BigEndian.PutUint32(data, c.Length)
 
 	data = append(data, []byte(c.ctype)...)
 	data = append(data, c.data...)
@@ -27,7 +27,7 @@ func NewChunk(ctype string, data string) (*Chunk, error) {
 	var c *Chunk
 	c = &Chunk{ctype: ctype, data: []byte(data)}
 
-	c.length = uint32(len(data))
+	c.Length = uint32(len(data))
 	buffer := new(bytes.Buffer)
 
 	err := binary.Write(buffer, binary.BigEndian, c.ctype)
