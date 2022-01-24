@@ -16,8 +16,8 @@ type ImageWriter struct {
 }
 
 type Chunk struct {
-	Length uint32
-	ctype  string
-	data   []byte
-	crc    uint32
+	size  uint32
+	ctype string
+	data  []byte
+	crc   uint32
 }
