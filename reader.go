@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -44,6 +45,7 @@ func (im *ImageReader) validate() (*Chunk, error) {
 
 	header = make([]byte, 8)
 	copy(header, "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a")
+	fmt.Println("diao")
 
 	err = binary.Read(im.reader, binary.BigEndian, &buf)
 	binary.BigEndian.PutUint64(h, buf)
