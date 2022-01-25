@@ -43,7 +43,7 @@ func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 		return err
 	}
 
-	file, err := os.Open(writer.filename)
+	file, err := os.OpenFile(writer.filename, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
 	if err != nil {
 		fmt.Println("helo")
 		panic(err)
