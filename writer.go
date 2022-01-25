@@ -20,7 +20,7 @@ func InitializeWriter(filename string, ihdr *Chunk) (*ImageWriter, error) {
 		file:     file,
 	}
 
-	err = binary.Write(file, binary.BigEndian, "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a")
+	err = binary.Write(file, binary.BigEndian, []byte("\x89\x50\x4e\x47\x0d\x0a\x1a\x0a"))
 	if err != nil {
 		return nil, err
 	}
