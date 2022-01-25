@@ -25,13 +25,15 @@ func (c *Chunk) DataToBytes() ([]byte, error) {
 
 func NewChunk(ctype string, data string) (*Chunk, error) {
 	var c *Chunk
+	var err error
+
 	c = &Chunk{Ctype: ctype, Data: []byte(data)}
 
 	c.Size = uint32(len(data))
 	buffer := new(bytes.Buffer)
 
-	err := binary.Write(buffer, binary.BigEndian, c.Ctype)
-	err = binary.Write(buffer, binary.BigEndian, c.Data)
+	c.Ctype = ctype
+	c.Data = []byte(data)
 
 	c.Crc = crc32.ChecksumIEEE(buffer.Bytes())
 
