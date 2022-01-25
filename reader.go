@@ -73,6 +73,9 @@ func (im *ImageReader) ReadChunk() (*Chunk, error) {
 	var t = make([]byte, 4)
 	err = binary.Read(im.reader, binary.BigEndian, &t)
 
+	c.Data = make([]byte, c.Size)
+	err = binary.Read(im.reader, binary.BigEndian, &c.Data)
+
 	c.Ctype = string(t)
 	err = binary.Read(im.reader, binary.BigEndian, &c.Crc)
 
