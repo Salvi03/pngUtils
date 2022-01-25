@@ -42,7 +42,7 @@ func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 	if err != nil {
 		return err
 	}
-	err = binary.Write(file, binary.BigEndian, string(data))
+	err = binary.Write(file, binary.BigEndian, data)
 
 	return err
 }
