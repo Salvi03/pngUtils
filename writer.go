@@ -48,6 +48,7 @@ func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 		fmt.Println("helo")
 		panic(err)
 	}
+	fmt.Println("there")
 	err = binary.Write(file, binary.BigEndian, data)
 
 	return err
