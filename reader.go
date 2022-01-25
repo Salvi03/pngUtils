@@ -150,6 +150,7 @@ func (im *ImageReader) ReadChunksTillTheEnd() ([]*Chunk, error) {
 
 	var err error
 
+	c = &Chunk{}
 	c.Ctype = ""
 	for c.Ctype != "IEND" {
 		c, err = im.ReadChunk()
