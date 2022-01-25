@@ -38,7 +38,12 @@ func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 		return err
 	}
 
-	err = binary.Write(writer.file, binary.BigEndian, string(data))
+	file, err := os.Open(writer.filename)
+	if err != nil {
+		return err
+	}
+	err = binary.Write(file, binary.BigEndian, string(data))
+
 	return err
 }
 
