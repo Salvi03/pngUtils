@@ -2,7 +2,6 @@ package pngutils
 
 import (
 	"encoding/binary"
-	"fmt"
 	"os"
 )
 
@@ -28,7 +27,7 @@ func InitializeWriter(filename string, ihdr *Chunk) (*ImageWriter, error) {
 
 	err = writer.WriteChunk(ihdr)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	return writer, err
@@ -45,10 +44,9 @@ func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 
 	file, err := os.OpenFile(writer.filename, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
 	if err != nil {
-		fmt.Println("helo")
-		panic(err)
+		return err
 	}
-	fmt.Println("there")
+
 	err = binary.Write(file, binary.BigEndian, data)
 
 	return err
