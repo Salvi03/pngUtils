@@ -26,6 +26,10 @@ func InitializeWriter(filename string, ihdr *Chunk) (*ImageWriter, error) {
 	}
 
 	err = writer.WriteChunk(ihdr)
+	if err != nil {
+		panic(err)
+	}
+
 	return writer, err
 }
 
