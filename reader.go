@@ -68,13 +68,13 @@ func (im *ImageReader) ReadChunk() (*Chunk, error) {
 	var err error
 
 	c = &Chunk{}
-	err = binary.Read(im.reader, binary.BigEndian, &c.size)
+	err = binary.Read(im.reader, binary.BigEndian, &c.Size)
 
 	var t = make([]byte, 4)
 	err = binary.Read(im.reader, binary.BigEndian, &t)
 
-	c.ctype = string(t)
-	err = binary.Read(im.reader, binary.BigEndian, &c.crc)
+	c.Ctype = string(t)
+	err = binary.Read(im.reader, binary.BigEndian, &c.Crc)
 
 	return c, err
 }
@@ -149,8 +149,8 @@ func (im *ImageReader) ReadChunksTillTheEnd() ([]*Chunk, error) {
 
 	var err error
 
-	c.ctype = ""
-	for c.ctype != "IEND" {
+	c.Ctype = ""
+	for c.Ctype != "IEND" {
 		c, err = im.ReadChunk()
 		if err != nil {
 			break
