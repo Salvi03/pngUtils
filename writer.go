@@ -43,6 +43,7 @@ func (writer *ImageWriter) WriteChunk(c *Chunk) error {
 	}
 
 	file, err := os.OpenFile(writer.filename, os.O_WRONLY|os.O_APPEND, os.ModeAppend)
+	defer file.Close()
 	if err != nil {
 		return err
 	}
@@ -63,4 +64,9 @@ func (writer *ImageWriter) WriteChunks(cs []*Chunk) error {
 	}
 
 	return err
+}
+
+// WriteLSB not implemented yet
+func (writer *ImageWriter) WriteLSB(message string) error {
+	return nil
 }
