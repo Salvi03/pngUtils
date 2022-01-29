@@ -1,7 +1,12 @@
 package pngutils
 
 import (
+	"bufio"
 	"encoding/binary"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
 	"os"
 )
 
@@ -66,7 +71,124 @@ func (writer *ImageWriter) WriteChunks(cs []*Chunk) error {
 	return err
 }
 
-// WriteLSB not implemented yet
-func (writer *ImageWriter) WriteLSB(message string) error {
-	return nil
+func messageToLSB(message string) ([]byte, error) {
+	var err error
+	var result = make([]byte, len(message)*4)
+	var mbytes = []byte(message)
+	var mb byte
+	var i = 0
+	var j = 0
+	var count = 0
+
+	for _, mbyte := range mbytes {
+		i = 0
+		for i < 4 {
+			mb = mbyte
+			j = i
+			for j > 0 {
+				mb = mb >> 2
+				j--
+			}
+			result[count] = mb & 0x03
+
+			i++
+			count++
+		}
+	}
+
+	return result, err
+}
+
+func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
+	var pixel color.NRGBA
+	var x = 0
+	var y = 0
+	var index = 0
+
+	var red *byte
+	var green *byte
+	var blue *byte
+
+	for index < len(LSBMessage) {
+		pixel = rgba.NRGBAAt(x, y)
+
+		red = &pixel.R
+		green = &pixel.G
+		blue = &pixel.B
+
+		*red = *red & 0xFC
+		*red += LSBMessage[index]
+		index++
+		if index >= len(LSBMessage) {
+			rgba.SetNRGBA(x, y, pixel)
+			continue
+		}
+
+		*green = *green & 0xFC
+		*green += LSBMessage[index]
+		index++
+		if index >= len(LSBMessage) {
+			rgba.SetNRGBA(x, y, pixel)
+			continue
+		}
+
+		*blue = *blue & 0xFC
+		*blue += LSBMessage[index]
+		index++
+		if index >= len(LSBMessage) {
+			rgba.SetNRGBA(x, y, pixel)
+			continue
+		}
+
+		rgba.SetNRGBA(x, y, pixel)
+		if x < rgba.Bounds().Dx() {
+			x++
+		} else {
+			x = 0
+			y++
+		}
+	}
+}
+
+// WriteLSB writes your message in the two least significant bits of every pixel
+func (writer *ImageWriter) WriteLSB(infile string, outfile string, message string) error {
+	var err error
+	var buffer *bufio.Reader
+	var file *os.File
+	var im image.Image
+	var rect image.Rectangle
+	var dst *image.NRGBA
+	var LSB []byte
+	var out *os.File
+
+	file, err = os.Open(infile)
+	if err != nil {
+		return err
+	}
+
+	buffer = bufio.NewReader(file)
+	im, err = png.Decode(buffer)
+	if err != nil {
+		return err
+	}
+
+	rect = image.Rect(0, 0, im.Bounds().Dx(), im.Bounds().Dy())
+	dst = image.NewNRGBA(rect)
+
+	draw.Draw(dst, dst.Bounds(), im, im.Bounds().Min, draw.Src)
+	LSB, err = messageToLSB(message)
+	if err != nil {
+		return err
+	}
+
+	writeMessage(dst, LSB)
+	out, err = os.Create(outfile)
+	if err != nil {
+		return err
+	}
+
+	err = png.Encode(out, dst)
+	out.Close()
+
+	return err
 }
