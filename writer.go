@@ -123,6 +123,7 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 		index++
 		if index >= len(LSBMessage) {
 			rgba.SetNRGBA(x, y, pixel)
+			fmt.Println("bomba ragazzi")
 			continue
 		}
 
