@@ -85,9 +85,9 @@ func messageToLSB(message string) ([]byte, error) {
 		for i < 4 {
 			mb = mbyte
 			j = i
-			for j < 4 {
+			for j > 0 {
 				mb = mb >> 2
-				j++
+				j--
 			}
 			result[count] = mb & 0x03
 			fmt.Println(result)
