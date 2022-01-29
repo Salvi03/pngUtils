@@ -150,6 +150,9 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 			y++
 		}
 	}
+
+	fmt.Println("Caio")
+	fmt.Println(index)
 }
 
 // WriteLSB writes your message in the two least significant bits of every pixel
