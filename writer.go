@@ -3,7 +3,6 @@ package pngutils
 import (
 	"bufio"
 	"encoding/binary"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -91,7 +90,6 @@ func messageToLSB(message string) ([]byte, error) {
 				j--
 			}
 			result[count] = mb & 0x03
-			fmt.Println(result)
 
 			i++
 			count++
@@ -123,7 +121,6 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 		index++
 		if index >= len(LSBMessage) {
 			rgba.SetNRGBA(x, y, pixel)
-			fmt.Println("bomba ragazzi")
 			continue
 		}
 
@@ -151,9 +148,6 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 			y++
 		}
 	}
-
-	fmt.Println("Caio")
-	fmt.Println(index)
 }
 
 // WriteLSB writes your message in the two least significant bits of every pixel
