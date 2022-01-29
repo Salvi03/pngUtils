@@ -88,7 +88,7 @@ func messageToLSB(message string) ([]byte, error) {
 				mb = mb >> 2
 				j--
 			}
-			result[count] = mb & 0xFC
+			result[count] = mb & 0x03
 
 			i++
 			count++
