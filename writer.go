@@ -82,6 +82,7 @@ func messageToLSB(message string) ([]byte, error) {
 	var count = 0
 
 	for _, mbyte := range mbytes {
+		i = 0
 		for i < 4 {
 			mb = mbyte
 			j = i
