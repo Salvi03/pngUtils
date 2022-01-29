@@ -3,6 +3,7 @@ package pngutils
 import (
 	"bufio"
 	"encoding/binary"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -84,12 +85,12 @@ func messageToLSB(message string) ([]byte, error) {
 		for i < 4 {
 			mb = mbyte
 			j = i
-			for j > 0 {
+			for j < 4 {
 				mb = mb >> 2
-				j--
+				j++
 			}
-			result[(len(result)-1)-count] = mb & 0x03
-			// fmt.Println(result)
+			result[count] = mb & 0x03
+			fmt.Println(result)
 
 			i++
 			count++
