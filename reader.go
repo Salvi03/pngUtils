@@ -241,7 +241,6 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 
 	result = make([]byte, size)
 	resultLSB := make([]byte, size*4)
-	fmt.Println(size)
 
 	for I < size {
 		pixel = img.NRGBAAt(x, y)
@@ -272,6 +271,7 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 		}
 	}
 
+	fmt.Println(resultLSB)
 	I = 0
 	index = 0
 
