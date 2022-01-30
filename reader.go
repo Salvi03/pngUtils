@@ -300,7 +300,7 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 	for offset < size {
 		I = 0
 		for I < 4 {
-			charLSB[index] = resultLSB[(offset+1)*I]
+			charLSB[I] = resultLSB[(offset+1)*I]
 			I++
 		}
 
