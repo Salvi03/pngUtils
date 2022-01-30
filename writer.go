@@ -3,7 +3,6 @@ package pngutils
 import (
 	"bufio"
 	"encoding/binary"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -108,11 +107,9 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 	var size = uint32(len(LSBMessage))
 	var bsize = make([]byte, 4)
 	binary.BigEndian.PutUint32(bsize, size)
-	fmt.Println(bsize)
 
 	LSBSize, _ := messageToLSB(bsize)
 	LSBMessage = append(LSBSize, LSBMessage...)
-	fmt.Println(LSBMessage)
 
 	var red *byte
 	var green *byte
