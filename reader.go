@@ -299,7 +299,7 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 		k = 0
 
 		for j < 4 {
-			if sample == 4294967294 {
+			if sample >= size*4 {
 				sample = 3
 			}
 
