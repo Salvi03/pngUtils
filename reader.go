@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -289,8 +288,6 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 	}
 
 	bsize := getLSBContent(4, img, col)
-	fmt.Println("AIAIAIAUOÒ")
-	fmt.Println(bsize)
 
 	size := binary.BigEndian.Uint32(bsize)
 	result = getLSBContent(size, img, col)
