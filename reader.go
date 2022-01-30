@@ -309,6 +309,8 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 		j = 0
 		k = 0
 
+		fmt.Println(charLSB)
+
 		for i > 0 {
 			k = 0
 			for k < i {
