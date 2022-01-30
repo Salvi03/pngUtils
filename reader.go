@@ -292,22 +292,28 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 
 	fmt.Println(resultLSB)
 	I = 0
-	index = 0
+	sample := uint32(3)
 
 	for I < size {
 		j = 0
 		k = 0
 
 		for j < 4 {
+			if sample < 0 {
+				sample = 3
+			}
+
 			for k < j {
-				resultLSB[index] = resultLSB[index] << 2
+				resultLSB[sample*(I+1)] = resultLSB[sample*(I+1)] << 2
 				k++
 			}
-			result[I] += resultLSB[index]
+			result[I] += resultLSB[sample*(I+1)]
 
-			index++
 			j++
+			sample--
 		}
+
+		binary.BigEndian.PutUint16()
 
 		I++
 	}
