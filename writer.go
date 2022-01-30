@@ -71,16 +71,15 @@ func (writer *ImageWriter) WriteChunks(cs []*Chunk) error {
 	return err
 }
 
-func messageToLSB(message string) ([]byte, error) {
+func messageToLSB(message []byte) ([]byte, error) {
 	var err error
 	var result = make([]byte, len(message)*4)
-	var mbytes = []byte(message)
 	var mb byte
 	var i = 0
 	var j = 0
 	var count = 0
 
-	for _, mbyte := range mbytes {
+	for _, mbyte := range message {
 		i = 0
 		for i < 4 {
 			mb = mbyte
@@ -104,6 +103,13 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 	var x = 0
 	var y = 0
 	var index = 0
+
+	var size = uint32(len(LSBMessage))
+	var bsize = make([]byte, 4)
+	binary.BigEndian.PutUint32(bsize, size)
+
+	LSBSize, _ := messageToLSB(bsize)
+	LSBMessage = append(LSBSize, LSBMessage...)
 
 	var red *byte
 	var green *byte
@@ -176,7 +182,7 @@ func (writer *ImageWriter) WriteLSB(infile string, outfile string, message strin
 	dst = image.NewNRGBA(rect)
 
 	draw.Draw(dst, dst.Bounds(), im, im.Bounds().Min, draw.Src)
-	LSB, err = messageToLSB(message)
+	LSB, err = messageToLSB([]byte(message))
 	if err != nil {
 		return err
 	}
