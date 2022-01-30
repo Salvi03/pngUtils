@@ -313,8 +313,6 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 			sample--
 		}
 
-		binary.BigEndian.PutUint16()
-
 		I++
 	}
 
