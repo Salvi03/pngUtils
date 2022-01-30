@@ -291,29 +291,41 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 	}
 
 	fmt.Println(resultLSB)
-	I = 0
-	sample := uint32(3)
+	var offset = uint32(0)
 
-	for I < size {
+	var char byte
+	var charLSB = make([]byte, 4)
+	I = 0
+
+	for offset < size {
+		I = 0
+		for I < 4 {
+			charLSB[index] = resultLSB[(offset+1)*I]
+			I++
+		}
+
+		i = 3
+		char = 0x00
 		j = 0
 		k = 0
 
-		for j < 4 {
-			if sample >= size*4 {
-				sample = 3
-			}
-
-			for k < j {
-				resultLSB[sample*(I+1)] = resultLSB[sample*(I+1)] << 2
+		for i > 0 {
+			k = 0
+			for k < i {
+				charLSB[i] = charLSB[i] << 2
 				k++
 			}
-			result[I] += resultLSB[sample*(I+1)]
 
+			i--
 			j++
-			sample--
 		}
 
-		I++
+		for _, b := range charLSB {
+			char += b
+		}
+
+		result[offset] = char
+		offset++
 	}
 
 	return result, err
