@@ -112,6 +112,7 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 
 	LSBSize, _ := messageToLSB(bsize)
 	LSBMessage = append(LSBSize, LSBMessage...)
+	fmt.Println(LSBMessage)
 
 	var red *byte
 	var green *byte
