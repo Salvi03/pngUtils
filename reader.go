@@ -5,6 +5,10 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
 	"os"
 )
 
@@ -162,4 +166,155 @@ func (im *ImageReader) ReadChunksTillTheEnd() ([]*Chunk, error) {
 	}
 
 	return cs, err
+}
+
+func getLSBMessage(img *image.NRGBA) ([]byte, error) {
+	var result []byte
+	var err error
+
+	var x = 0
+	var y = 0
+
+	var sizeLSB = make([]byte, 16)
+	var index = 0
+	var pixel color.NRGBA
+
+	for index < 16 {
+		pixel = img.NRGBAAt(x, y)
+
+		sizeLSB[index] = pixel.R & 0x03
+		index++
+		if index >= 16 {
+			break
+		}
+
+		sizeLSB[index] = pixel.G & 0x03
+		index++
+		if index >= 16 {
+			break
+		}
+
+		sizeLSB[index] = pixel.B & 0x03
+		index++
+		if index >= 16 {
+			break
+		}
+
+		if x < img.Bounds().Dx() {
+			x++
+		} else {
+			x = 0
+			y++
+		}
+	}
+
+	bsize := make([]byte, 4)
+	index = 0
+
+	i := 0
+	j := 0
+	k := 0
+
+	for i < 4 {
+		j = 0
+		k = 0
+
+		for j < 4 {
+			for k < j {
+				sizeLSB[index] = sizeLSB[index] << 2
+				k++
+			}
+			bsize[i] += sizeLSB[index]
+
+			index++
+			j++
+		}
+
+		i++
+	}
+
+	size := binary.BigEndian.Uint32(bsize)
+
+	I := uint32(0)
+	index = 0
+
+	result = make([]byte, size)
+	resultLSB := make([]byte, size*4)
+	for I < size {
+		pixel = img.NRGBAAt(x, y)
+
+		resultLSB[I] = pixel.R & 0x03
+		I++
+		if I >= 16 {
+			break
+		}
+
+		resultLSB[I] = pixel.G & 0x03
+		I++
+		if I >= 16 {
+			break
+		}
+
+		resultLSB[I] = pixel.B & 0x03
+		I++
+		if I >= 16 {
+			break
+		}
+
+		if x < img.Bounds().Dx() {
+			x++
+		} else {
+			x = 0
+			y++
+		}
+	}
+
+	I = 0
+	index = 0
+
+	for I < size {
+		j = 0
+		k = 0
+
+		for j < 4 {
+			for k < j {
+				resultLSB[index] = resultLSB[index] << 2
+				k++
+			}
+			result[I] += resultLSB[index]
+
+			index++
+			j++
+		}
+
+		I++
+	}
+
+	return result, err
+}
+
+func ReadLSBMessage(filename string) ([]byte, error) {
+	var err error
+	var file *os.File
+	var buffer *bufio.Reader
+	var img image.Image
+	var rgba *image.NRGBA
+	var rect image.Rectangle
+
+	file, err = os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	buffer = bufio.NewReader(file)
+	img, err = png.Decode(buffer)
+	if err != nil {
+		return nil, err
+	}
+	rect = image.Rect(0, 0, img.Bounds().Dx(), img.Bounds().Dy())
+	rgba = image.NewNRGBA(rect)
+
+	draw.Draw(rgba, rgba.Bounds(), img, img.Bounds().Min, draw.Src)
+
+	return nil, err
 }

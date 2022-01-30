@@ -157,7 +157,7 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 }
 
 // WriteLSB writes your message in the two least significant bits of every pixel
-func (writer *ImageWriter) WriteLSB(infile string, outfile string, message string) error {
+func WriteLSB(infile string, outfile string, message string) error {
 	var err error
 	var buffer *bufio.Reader
 	var file *os.File
