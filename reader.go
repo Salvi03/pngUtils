@@ -301,6 +301,8 @@ func ReadLSBMessage(filename string) ([]byte, error) {
 	var rgba *image.NRGBA
 	var rect image.Rectangle
 
+	var result []byte
+
 	file, err = os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -315,6 +317,7 @@ func ReadLSBMessage(filename string) ([]byte, error) {
 	rgba = image.NewNRGBA(rect)
 
 	draw.Draw(rgba, rgba.Bounds(), img, img.Bounds().Min, draw.Src)
+	result, err = getLSBMessage(rgba)
 
-	return nil, err
+	return result, err
 }
