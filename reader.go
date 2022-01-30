@@ -180,24 +180,31 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 	var index = 0
 	var pixel color.NRGBA
 
+	red := false
+	green := false
+	blue := false
+
 	for index < 16 {
 		pixel = img.NRGBAAt(x, y)
 
 		sizeLSB[index] = pixel.R & 0x03
 		index++
 		if index >= 16 {
+			red = true
 			break
 		}
 
 		sizeLSB[index] = pixel.G & 0x03
 		index++
 		if index >= 16 {
+			green = true
 			break
 		}
 
 		sizeLSB[index] = pixel.B & 0x03
 		index++
 		if index >= 16 {
+			blue = true
 			break
 		}
 
@@ -241,30 +248,36 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 
 	result = make([]byte, size)
 	resultLSB := make([]byte, size*4)
-	/*if x < img.Bounds().Dx() {
-		x++
-	} else {
-		x = 0
-		y++
-	}*/
 
 	for I < size*4 {
 		pixel = img.NRGBAAt(x, y)
 
-		resultLSB[I] = pixel.R & 0x03
-		I++
+		if !red {
+			resultLSB[I] = pixel.R & 0x03
+			I++
+		}
+		red = false
+
 		if I >= size*4 {
 			break
 		}
 
-		resultLSB[I] = pixel.G & 0x03
-		I++
+		if !green {
+			resultLSB[I] = pixel.G & 0x03
+			I++
+		}
+		green = false
+
 		if I >= size*4 {
 			break
 		}
 
-		resultLSB[I] = pixel.B & 0x03
-		I++
+		if !blue {
+			resultLSB[I] = pixel.B & 0x03
+			I++
+		}
+		blue = false
+
 		if I >= size*4 {
 			break
 		}
