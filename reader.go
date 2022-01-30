@@ -169,128 +169,70 @@ func (im *ImageReader) ReadChunksTillTheEnd() ([]*Chunk, error) {
 	return cs, err
 }
 
-func getLSBMessage(img *image.NRGBA) ([]byte, error) {
-	var result []byte
-	var err error
+type colors struct {
+	red   bool
+	green bool
+	blue  bool
+	x     int
+	y     int
+}
 
-	var x = 0
-	var y = 0
-
-	var sizeLSB = make([]byte, 16)
-	var index = 0
+func getLSBContent(size uint32, img *image.NRGBA, col *colors) []byte {
 	var pixel color.NRGBA
+	var resultLSB = make([]byte, 4*size)
+	var I = uint32(0)
+	var i int
+	var j int
+	var k int
+	var result = make([]byte, size)
 
-	red := false
-	green := false
-	blue := false
-
-	for index < 16 {
-		pixel = img.NRGBAAt(x, y)
-
-		sizeLSB[index] = pixel.R & 0x03
-		index++
-		if index >= 16 {
-			red = true
-			break
-		}
-
-		sizeLSB[index] = pixel.G & 0x03
-		index++
-		if index >= 16 {
-			green = true
-			break
-		}
-
-		sizeLSB[index] = pixel.B & 0x03
-		index++
-		if index >= 16 {
-			blue = true
-			break
-		}
-
-		if x < img.Bounds().Dx() {
-			x++
-		} else {
-			x = 0
-			y++
-		}
-	}
-
-	bsize := make([]byte, 4)
-	index = 0
-
-	i := 0
-	j := 0
-	k := 0
-
-	for i < 4 {
-		j = 0
-		k = 0
-
-		for j < 4 {
-			for k < j {
-				sizeLSB[index] = sizeLSB[index] << 2
-				k++
-			}
-			bsize[i] += sizeLSB[index]
-
-			index++
-			j++
-		}
-
-		i++
-	}
-
-	size := binary.BigEndian.Uint32(bsize)
-
-	I := uint32(0)
-	index = 0
-
-	result = make([]byte, size)
-	resultLSB := make([]byte, size*4)
+	index := 0
 
 	for I < size*4 {
-		pixel = img.NRGBAAt(x, y)
+		pixel = img.NRGBAAt(col.x, col.y)
 
-		if !red {
+		if !col.red {
 			resultLSB[I] = pixel.R & 0x03
 			I++
+			col.red = true
 		}
-		red = false
 
 		if I >= size*4 {
 			break
 		}
 
-		if !green {
+		if !col.green {
 			resultLSB[I] = pixel.G & 0x03
 			I++
+			col.green = true
 		}
-		green = false
 
 		if I >= size*4 {
 			break
 		}
 
-		if !blue {
+		if !col.blue {
 			resultLSB[I] = pixel.B & 0x03
 			I++
+			col.blue = true
 		}
-		blue = false
 
 		if I >= size*4 {
 			break
 		}
 
-		if x < img.Bounds().Dx() {
-			x++
+		col.red = false
+		col.green = false
+		col.blue = false
+
+		if col.x < img.Bounds().Dx() {
+			col.x++
 		} else {
-			x = 0
-			y++
+			col.x = 0
+			col.y++
 		}
 	}
 
-	fmt.Println(resultLSB)
 	var offset = uint32(0)
 
 	var char byte
@@ -309,8 +251,6 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 		char = 0x00
 		j = 0
 		k = 0
-
-		fmt.Println(charLSB)
 
 		for i > 0 {
 			k = 0
@@ -331,6 +271,29 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 		offset += 4
 		index++
 	}
+
+	return result
+}
+
+func getLSBMessage(img *image.NRGBA) ([]byte, error) {
+	var result []byte
+	var err error
+
+	// var index = 0
+	col := &colors{
+		red:   false,
+		blue:  false,
+		green: false,
+		x:     0,
+		y:     0,
+	}
+
+	bsize := getLSBContent(4, img, col)
+	fmt.Println("AIAIAIAUOÒ")
+	fmt.Println(bsize)
+
+	size := binary.BigEndian.Uint32(bsize)
+	result = getLSBContent(size, img, col)
 
 	return result, err
 }
