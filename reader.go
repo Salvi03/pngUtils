@@ -293,16 +293,13 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 	fmt.Println(resultLSB)
 	I = 0
 	index = 0
-	sample := 0
 
 	for I < size {
 		j = 0
 		k = 0
 
 		for j < 4 {
-
-			sample = 3 - j
-			for k < sample {
+			for k < j {
 				resultLSB[index] = resultLSB[index] << 2
 				k++
 			}
