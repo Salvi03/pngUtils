@@ -70,7 +70,6 @@ func (writer *ImageWriter) WriteChunks(cs []*Chunk) error {
 
 	return err
 }
-
 func messageToLSB(message []byte) ([]byte, error) {
 	var err error
 	var result = make([]byte, len(message)*4)
@@ -105,8 +104,9 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 	var index = 0
 
 	var size = uint32(len(LSBMessage))
+
 	var bsize = make([]byte, 4)
-	binary.BigEndian.PutUint32(bsize, size)
+	binary.BigEndian.PutUint32(bsize, size/4)
 
 	LSBSize, _ := messageToLSB(bsize)
 	LSBMessage = append(LSBSize, LSBMessage...)
@@ -157,7 +157,7 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 }
 
 // WriteLSB writes your message in the two least significant bits of every pixel
-func (writer *ImageWriter) WriteLSB(infile string, outfile string, message string) error {
+func WriteLSB(infile string, outfile string, message string) error {
 	var err error
 	var buffer *bufio.Reader
 	var file *os.File
@@ -194,7 +194,7 @@ func (writer *ImageWriter) WriteLSB(infile string, outfile string, message strin
 	}
 
 	err = png.Encode(out, dst)
-	out.Close()
+	_ = out.Close()
 
 	return err
 }
