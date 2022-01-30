@@ -253,19 +253,19 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 
 		resultLSB[I] = pixel.R & 0x03
 		I++
-		if I >= 16 {
+		if I >= size*4 {
 			break
 		}
 
 		resultLSB[I] = pixel.G & 0x03
 		I++
-		if I >= 16 {
+		if I >= size*4 {
 			break
 		}
 
 		resultLSB[I] = pixel.B & 0x03
 		I++
-		if I >= 16 {
+		if I >= size*4 {
 			break
 		}
 
