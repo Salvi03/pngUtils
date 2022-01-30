@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -240,6 +241,8 @@ func getLSBMessage(img *image.NRGBA) ([]byte, error) {
 
 	result = make([]byte, size)
 	resultLSB := make([]byte, size*4)
+	fmt.Println(size)
+
 	for I < size {
 		pixel = img.NRGBAAt(x, y)
 
