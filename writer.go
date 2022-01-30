@@ -3,6 +3,7 @@ package pngutils
 import (
 	"bufio"
 	"encoding/binary"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -70,7 +71,6 @@ func (writer *ImageWriter) WriteChunks(cs []*Chunk) error {
 
 	return err
 }
-
 func messageToLSB(message []byte) ([]byte, error) {
 	var err error
 	var result = make([]byte, len(message)*4)
@@ -105,8 +105,10 @@ func writeMessage(rgba *image.NRGBA, LSBMessage []byte) {
 	var index = 0
 
 	var size = uint32(len(LSBMessage))
+	fmt.Println(size)
+
 	var bsize = make([]byte, 4)
-	binary.BigEndian.PutUint32(bsize, size)
+	binary.BigEndian.PutUint32(bsize, size/4)
 
 	LSBSize, _ := messageToLSB(bsize)
 	LSBMessage = append(LSBSize, LSBMessage...)
@@ -194,7 +196,7 @@ func WriteLSB(infile string, outfile string, message string) error {
 	}
 
 	err = png.Encode(out, dst)
-	out.Close()
+	_ = out.Close()
 
 	return err
 }
